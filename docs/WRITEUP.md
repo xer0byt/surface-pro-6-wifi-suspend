@@ -44,6 +44,11 @@ warm reboot would also have worked, so power off fully to be safe.
    and the driver left loaded, three suspends (about 49 s, 6 min, 40 min) all
    resumed with Wi-Fi back about four seconds after wake and none of the errors
    above (evidence D).
+6. **The linux-surface kernel also works, with the stop-gap removed.** On
+   6.19.8-surface-3 with no `pcie_port_pm=off` and no hook, two suspends (45 s
+   and 9 min) resumed with Wi-Fi back in about three seconds and none of the
+   errors above (evidence E). The module logs `quirk no_brigde_d3 enabled` at
+   probe.
 
 ## 3. Root cause (best current understanding)
 
@@ -59,8 +64,10 @@ Caveats on that claim:
 - I did not read the Marvell firmware or verify the mechanism independently. The
   evidence here is consistent with the patch author's finding, and the stop-gap
   below made the failure disappear in my tests.
-- Three suspend cycles on one machine is encouraging, not proof. The original
-  failure was intermittent.
+- Five suspend cycles in total on one machine (three with the stop-gap, two
+  with the Surface kernel) is encouraging, not proof. The original failure was
+  intermittent, and the longest test was 40 minutes; an overnight sleep has not
+  been tried.
 - Stock Debian/Ubuntu kernels contain the `reset_d3cold` quirk
   (`quirk reset_d3cold enabled` in dmesg) but, in my kernel, no no-bridge-D3
   quirk. `wifi-diagnose.sh` checks the module for it.
@@ -105,12 +112,40 @@ contains:
 The second row matters for battery: it targets the very idle-power problem a
 global `pcie_port_pm=off` can worsen.
 
-Status: **not yet tested by the author.** Follow the linux-surface
+Status: **tested on the Surface Pro 6** (kernel 6.19.8-surface-3 from the
+linux-surface apt repository, Secure Boot enabled). Follow the linux-surface
 installation guide for your distribution, including its notes on Secure Boot.
-After booting the Surface kernel, run `wifi-diagnose.sh` (it should report
-`no_bridge_d3 quirk : PRESENT`), do several suspend cycles, then
-`sudo bash scripts/wifi-fix.sh revert` and reboot to drop the stop-gap and
-compare.
+In my case the linux-surface signing certificate was already enrolled in the
+firmware's MOK list, so Secure Boot did not need to be disabled; kernel lockdown
+still applies, which among other things blocks hibernation.
+
+After booting the Surface kernel:
+
+1. `wifi-diagnose.sh` should report `no_bridge_d3 quirk : PRESENT`. Upstream's
+   log message spells the flag `no_brigde_d3`; the script matches both
+   spellings (earlier versions of it gave a false "absent").
+2. Remove the stop-gap (`sudo bash scripts/wifi-fix.sh revert`) and reboot into
+   the Surface kernel again, so the test isolates the kernel patch.
+3. Run several suspend cycles, including a long one.
+
+Result on the test machine is in evidence E. Battery comparison against the
+stop-gap was not measured under the same conditions, so no claim is made that
+this saves power.
+
+Caveats:
+
+- Check `uname -r` after rebooting. On the test machine I picked the Surface
+  kernel from the menu on its first boot and it later came up by default after
+  an unclean shutdown; I did not establish why. If you land on the generic
+  kernel, select the Surface entry under *Advanced options*.
+- The Surface kernel follows a different version line (6.19.x here, against the
+  distribution's 7.0.x), so it is updated from the linux-surface repository on
+  its own schedule. Check that you are still receiving security fixes.
+- One shutdown stalled for about three minutes while stopping
+  `iptsd@dev-hidraw*.service`, the touchscreen daemon from the linux-surface
+  packages. The process ignored SIGKILL, which points at the kernel IPTS path,
+  and I power-cycled (evidence F). I saw it once and did not investigate, so I
+  cannot say how common it is. It is not a Wi-Fi symptom.
 
 ## 5. What did not work
 

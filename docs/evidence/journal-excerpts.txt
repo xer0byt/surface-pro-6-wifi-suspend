@@ -208,3 +208,23 @@ Oct 11 09:33:30 HOST kernel: mwifiex_pcie 0000:01:00.0: assoc: associated with X
 Oct 11 09:33:30 HOST kernel: mwifiex_pcie 0000:01:00.0: info: associated to bssid XX:XX:XX:XX:XX:XX successfully
 Oct 11 09:33:30 HOST kernel: mwifiex_pcie 0000:01:00.0: key: send EAPOL to XX:XX:XX:XX:XX:XX
 Oct 11 09:33:30 HOST kernel: mwifiex_pcie 0000:01:00.0: key: send EAPOL to XX:XX:XX:XX:XX:XX
+
+## E. linux-surface kernel 6.19.8-surface-3, no pcie_port_pm=off, no hook: two cycles (45 s, 9 min).
+## Quirks enabled at probe (upstream's log message really spells it "brigde"). Wi-Fi back ~3 s after wake.
+Oct 11 13:13:33 HOST kernel: Linux version 6.19.8-surface-3
+Oct 11 13:13:34 HOST kernel: mwifiex_pcie 0000:01:00.0: quirk reset_d3cold enabled
+Oct 11 13:13:34 HOST kernel: mwifiex_pcie 0000:01:00.0: quirk do_flr_on_bridge enabled
+Oct 11 13:13:34 HOST kernel: mwifiex_pcie 0000:01:00.0: quirk no_brigde_d3 enabled
+Oct 11 13:13:35 HOST kernel: mwifiex_pcie 0000:01:00.0: info: FW download over, size 723540 bytes
+Oct 11 13:16:13 HOST kernel: PM: suspend entry (s2idle)
+Oct 11 13:16:58 HOST kernel: PM: suspend exit
+Oct 11 13:17:01 HOST kernel: mwifiex_pcie 0000:01:00.0: assoc: associated with XX:XX:XX:XX:XX:XX
+Oct 11 13:33:25 HOST kernel: PM: suspend entry (s2idle)
+Oct 11 13:42:16 HOST kernel: PM: suspend exit
+Oct 11 13:42:19 HOST kernel: mwifiex_pcie 0000:01:00.0: assoc: associated with XX:XX:XX:XX:XX:XX
+
+## F. Same kernel, one shutdown stalled on the touchscreen daemon (not Wi-Fi; seen once).
+Oct 11 13:09:23 HOST systemd[1]: Stopped target time-set.target - System Time Set.
+Oct 11 13:10:50 HOST systemd[1]: iptsd@dev-hidraw2.service: State 'stop-sigterm' timed out. Killing.
+Oct 11 13:10:50 HOST systemd[1]: iptsd@dev-hidraw2.service: Killing process 1260 (iptsd) with signal SIGKILL.
+Oct 11 13:12:20 HOST systemd[1]: iptsd@dev-hidraw2.service: Processes still around after SIGKILL. Ignoring.

@@ -6,10 +6,11 @@ Debian-based distribution. A full power-off is needed to recover.
 
 This repository has a diagnostic script, a stop-gap fix, and a full write-up.
 
-> **Status:** the stop-gap fix is verified on one machine (Surface Pro 6,
-> Kubuntu / Ubuntu 26.04, kernel 7.0.0-38-generic). The complete fix, a kernel
-> carrying the linux-surface patches, is described but **not yet tested by the
-> author**. See [docs/WRITEUP.md](docs/WRITEUP.md).
+> **Status:** both fixes are verified on one machine (Surface Pro 6, Kubuntu /
+> Ubuntu 26.04). The stop-gap (`pcie_port_pm=off`, stock 7.0.0-38-generic) and
+> the proper fix (linux-surface kernel 6.19.8-surface-3, stop-gap removed) each
+> survived the suspend cycles tried, but the sample is small: five cycles in
+> total, longest 40 minutes. See [docs/WRITEUP.md](docs/WRITEUP.md).
 
 ## Is this your problem?
 
@@ -51,7 +52,23 @@ machine a 40-minute suspend used about 4% battery. Measure yours.
 
 Run the [linux-surface](https://github.com/linux-surface/linux-surface) kernel,
 which carries the Wi-Fi quirks that the stock Debian/Ubuntu kernels lack. Once
-you do, remove the stop-gap with `wifi-fix.sh revert`.
+you do, remove the stop-gap with `wifi-fix.sh revert` and reboot.
+
+Tested result (Surface Pro 6, Secure Boot on, linux-surface signing key enrolled
+in MOK): after booting 6.19.8-surface-3 without `pcie_port_pm=off`,
+`wifi-diagnose.sh` reports `no_bridge_d3 quirk : PRESENT`, and suspends of
+45 s and 9 min both resumed with Wi-Fi back in about 3 s and no error
+signatures.
+
+Things to check after installing it:
+
+- `uname -r` should show the `-surface` kernel. Which kernel GRUB boots by
+  default depends on its version ordering; if you land on the generic one,
+  choose the Surface entry under *Advanced options*.
+- A single shutdown on the test machine stalled for about three minutes on
+  `iptsd` (the touchscreen daemon, part of the linux-surface packages) and
+  needed a power-button reset. It happened once; the cause is not established
+  and it is unrelated to Wi-Fi. See the write-up.
 
 ## Contents
 
