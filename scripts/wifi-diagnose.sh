@@ -101,7 +101,8 @@ main() {
             echo "$strings_out" | grep -q 'reset_d3cold' &&
                 echo "reset_d3cold quirk : present (upstream)" ||
                 echo "reset_d3cold quirk : absent"
-            if echo "$strings_out" | grep -qiE 'no_bri(d)?ge_d3'; then
+            # Upstream spells the flag "no_brigde_d3" in its log message; match loosely.
+            if echo "$strings_out" | grep -qiE 'no_br[a-z]*_d3'; then
                 echo "no_bridge_d3 quirk : PRESENT (linux-surface kernel patch)"
                 fw_ok=1
             else
