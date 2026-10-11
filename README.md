@@ -24,7 +24,7 @@ mwifiex_pcie 0000:01:00.0: cmd_wait_q terminated: -110
 or Wi-Fi simply never returns and `lspci` no longer shows the Marvell device.
 
 ```bash
-git clone https://github.com/<owner>/surface-pro-6-wifi-suspend
+git clone https://github.com/xer0byt/surface-pro-6-wifi-suspend
 cd surface-pro-6-wifi-suspend
 bash scripts/wifi-diagnose.sh            # read-only
 bash scripts/wifi-diagnose.sh --redact   # safe to paste into an issue
