@@ -1,0 +1,210 @@
+# Evidence: Surface Pro 6, Ubuntu 26.04 (Kubuntu), kernel 7.0.0-38-generic
+# Hostname and access-point MAC addresses redacted. Times are the machine's local time.
+
+## A. No workaround: firmware does not wake after resume, driver's own D3cold reset does not clear it
+Oct 11 01:13:45 HOST kernel: mwifiex_pcie 0000:01:00.0: info: successfully disconnected from XX:XX:XX:XX:XX:XX: reason code 3
+Oct 11 01:13:45 HOST kernel: PM: suspend entry (s2idle)
+Oct 11 01:17:36 HOST kernel: mwifiex_pcie 0000:01:00.0: Unable to change power state from D3hot to D0, device inaccessible
+Oct 11 01:17:36 HOST kernel: PM: suspend exit
+Oct 11 01:17:36 HOST kernel: mwifiex_pcie 0000:01:00.0: Firmware didn't wake up
+Oct 11 01:17:39 HOST kernel: mwifiex_pcie 0000:01:00.0: Firmware wakeup failed
+Oct 11 01:17:39 HOST kernel: mwifiex_pcie 0000:01:00.0: PREP_CMD: FW in reset state
+Oct 11 01:17:39 HOST kernel: mwifiex_pcie 0000:01:00.0: info: shutdown mwifiex...
+Oct 11 01:17:39 HOST kernel: mwifiex_pcie 0000:01:00.0: PREP_CMD: card is removed
+Oct 11 01:17:39 HOST kernel: mwifiex_pcie 0000:01:00.0: Using reset_d3cold quirk to perform FW reset
+Oct 11 01:17:39 HOST kernel: mwifiex_pcie 0000:01:00.0: putting into D3cold...
+Oct 11 01:17:39 HOST kernel: mwifiex_pcie 0000:01:00.0: putting into D0...
+Oct 11 01:17:39 HOST kernel: mwifiex_pcie 0000:01:00.0: Unable to change power state from D3cold to D0, device inaccessible
+Oct 11 01:17:39 HOST kernel: mwifiex_pcie 0000:01:00.0: Unable to change power state from D3cold to D0, device inaccessible
+Oct 11 01:17:39 HOST kernel: mwifiex_pcie 0000:01:00.0: WLAN FW already running! Skip FW dnld
+Oct 11 01:17:39 HOST kernel: mwifiex_pcie 0000:01:00.0: WLAN FW is active
+Oct 11 01:17:39 HOST kernel: mwifiex_pcie 0000:01:00.0: host_mlme: disable, key_api: 2
+Oct 11 01:17:39 HOST kernel: mwifiex_pcie 0000:01:00.0: info: MWIFIEX VERSION: mwifiex 1.0 (15.68.19.p21) 
+Oct 11 01:17:39 HOST kernel: mwifiex_pcie 0000:01:00.0: driver_version = mwifiex 1.0 (15.68.19.p21) 
+Oct 11 01:17:39 HOST kernel: mwifiex_pcie 0000:01:00.0 wlp1s0: renamed from mlan0
+Oct 11 01:18:02 HOST kernel: mwifiex_pcie 0000:01:00.0: info: shutdown mwifiex...
+Oct 11 01:18:02 HOST kernel: mwifiex_pcie 0000:01:00.0: PREP_CMD: card is removed
+Oct 11 01:18:02 HOST kernel: mwifiex_pcie 0000:01:00.0: PREP_CMD: card is removed
+Oct 11 01:18:02 HOST kernel: mwifiex_pcie 0000:01:00.0: performing cancel_work_sync()...
+Oct 11 01:18:02 HOST kernel: mwifiex_pcie 0000:01:00.0: cancel_work_sync() done
+
+## B. Earlier boot: after a ~64 minute suspend the card is unusable; the driver was reloaded by hand onto the
+##    still-running firmware, associated, then every firmware command times out (-110)
+Oct 10 23:42:49 HOST kernel: mwifiex_pcie 0000:01:00.0: info: successfully disconnected from XX:XX:XX:XX:XX:XX: reason code 3
+Oct 10 23:42:49 HOST kernel: PM: suspend entry (s2idle)
+Oct 11 00:47:08 HOST kernel: mwifiex_pcie 0000:01:00.0: Unable to change power state from D3hot to D0, device inaccessible
+Oct 11 00:47:08 HOST kernel: PM: suspend exit
+Oct 11 00:47:08 HOST kernel: mwifiex_pcie 0000:01:00.0: Firmware didn't wake up
+Oct 11 00:47:11 HOST kernel: mwifiex_pcie 0000:01:00.0: Firmware wakeup failed
+Oct 11 00:47:11 HOST kernel: mwifiex_pcie 0000:01:00.0: PREP_CMD: FW in reset state
+Oct 11 00:47:11 HOST kernel: mwifiex_pcie 0000:01:00.0: info: shutdown mwifiex...
+Oct 11 00:47:11 HOST kernel: mwifiex_pcie 0000:01:00.0: PREP_CMD: card is removed
+Oct 11 00:47:11 HOST kernel: mwifiex_pcie 0000:01:00.0: Using reset_d3cold quirk to perform FW reset
+Oct 11 00:47:11 HOST kernel: mwifiex_pcie 0000:01:00.0: putting into D3cold...
+Oct 11 00:47:11 HOST kernel: mwifiex_pcie 0000:01:00.0: putting into D0...
+Oct 11 00:47:11 HOST kernel: mwifiex_pcie 0000:01:00.0: Unable to change power state from D3cold to D0, device inaccessible
+Oct 11 00:47:11 HOST kernel: mwifiex_pcie 0000:01:00.0: Unable to change power state from D3cold to D0, device inaccessible
+Oct 11 00:47:11 HOST kernel: mwifiex_pcie 0000:01:00.0: WLAN FW already running! Skip FW dnld
+Oct 11 00:47:11 HOST kernel: mwifiex_pcie 0000:01:00.0: WLAN FW is active
+Oct 11 00:47:11 HOST kernel: mwifiex_pcie 0000:01:00.0: host_mlme: disable, key_api: 2
+Oct 11 00:47:11 HOST kernel: mwifiex_pcie 0000:01:00.0: info: MWIFIEX VERSION: mwifiex 1.0 (15.68.19.p21) 
+Oct 11 00:47:11 HOST kernel: mwifiex_pcie 0000:01:00.0: driver_version = mwifiex 1.0 (15.68.19.p21) 
+Oct 11 00:47:11 HOST kernel: mwifiex_pcie 0000:01:00.0 wlp1s0: renamed from mlan0
+Oct 11 00:48:35 HOST kernel: mwifiex_pcie 0000:01:00.0: info: shutdown mwifiex...
+Oct 11 00:48:35 HOST kernel: mwifiex_pcie 0000:01:00.0: PREP_CMD: card is removed
+Oct 11 00:48:35 HOST kernel: mwifiex_pcie 0000:01:00.0: PREP_CMD: card is removed
+Oct 11 00:48:35 HOST kernel: mwifiex_pcie 0000:01:00.0: performing cancel_work_sync()...
+Oct 11 00:48:35 HOST kernel: mwifiex_pcie 0000:01:00.0: cancel_work_sync() done
+Oct 11 00:48:50 HOST kernel: mwifiex_pcie 0000:01:00.0: quirk reset_d3cold enabled
+Oct 11 00:48:50 HOST kernel: mwifiex_pcie: PCI memory map Virt0: 000000001f206bff PCI memory map Virt2: 00000000e8eaba9a
+Oct 11 00:48:50 HOST kernel: mwifiex_pcie 0000:01:00.0: WLAN FW already running! Skip FW dnld
+Oct 11 00:48:50 HOST kernel: mwifiex_pcie 0000:01:00.0: WLAN FW is active
+Oct 11 00:48:51 HOST kernel: mwifiex_pcie 0000:01:00.0: host_mlme: disable, key_api: 2
+Oct 11 00:48:51 HOST kernel: mwifiex_pcie 0000:01:00.0: info: MWIFIEX VERSION: mwifiex 1.0 (15.68.19.p21) 
+Oct 11 00:48:51 HOST kernel: mwifiex_pcie 0000:01:00.0: driver_version = mwifiex 1.0 (15.68.19.p21) 
+Oct 11 00:48:51 HOST kernel: mwifiex_pcie 0000:01:00.0 wlp1s0: renamed from mlan0
+Oct 11 00:48:54 HOST kernel: mwifiex_pcie 0000:01:00.0: info: trying to associate to bssid XX:XX:XX:XX:XX:XX
+Oct 11 00:48:55 HOST kernel: mwifiex_pcie 0000:01:00.0: assoc: associated with XX:XX:XX:XX:XX:XX
+Oct 11 00:48:55 HOST kernel: mwifiex_pcie 0000:01:00.0: info: associated to bssid XX:XX:XX:XX:XX:XX successfully
+Oct 11 00:48:55 HOST kernel: mwifiex_pcie 0000:01:00.0: key: send EAPOL to XX:XX:XX:XX:XX:XX
+Oct 11 00:48:56 HOST kernel: mwifiex_pcie 0000:01:00.0: key: send EAPOL to XX:XX:XX:XX:XX:XX
+Oct 11 00:48:57 HOST kernel: mwifiex_pcie 0000:01:00.0: key: send EAPOL to XX:XX:XX:XX:XX:XX
+Oct 11 00:49:17 HOST kernel: mwifiex_pcie 0000:01:00.0: cmd_wait_q terminated: -110
+Oct 11 00:49:27 HOST kernel: mwifiex_pcie 0000:01:00.0: info: successfully disconnected from XX:XX:XX:XX:XX:XX: reason code 15
+Oct 11 00:49:29 HOST kernel: mwifiex_pcie 0000:01:00.0: cmd_wait_q terminated: -110
+Oct 11 00:49:29 HOST kernel: mwifiex_pcie 0000:01:00.0: deleting the crypto keys
+Oct 11 00:49:42 HOST kernel: mwifiex_pcie 0000:01:00.0: cmd_wait_q terminated: -110
+Oct 11 00:49:42 HOST kernel: mwifiex_pcie 0000:01:00.0: deleting the crypto keys
+Oct 11 00:49:54 HOST kernel: mwifiex_pcie 0000:01:00.0: cmd_wait_q terminated: -110
+Oct 11 00:49:54 HOST kernel: mwifiex_pcie 0000:01:00.0: deleting the crypto keys
+Oct 11 00:50:06 HOST kernel: mwifiex_pcie 0000:01:00.0: cmd_wait_q terminated: -110
+Oct 11 00:50:06 HOST kernel: mwifiex_pcie 0000:01:00.0: deleting the crypto keys
+Oct 11 00:50:19 HOST kernel: mwifiex_pcie 0000:01:00.0: cmd_wait_q terminated: -110
+Oct 11 00:50:19 HOST kernel: mwifiex_pcie 0000:01:00.0: deleting the crypto keys
+Oct 11 00:50:31 HOST kernel: mwifiex_pcie 0000:01:00.0: cmd_wait_q terminated: -110
+Oct 11 00:50:31 HOST kernel: mwifiex_pcie 0000:01:00.0: deleting the crypto keys
+Oct 11 00:50:43 HOST kernel: mwifiex_pcie 0000:01:00.0: cmd_wait_q terminated: -110
+Oct 11 00:50:43 HOST kernel: mwifiex_pcie 0000:01:00.0: deleting the crypto keys
+Oct 11 00:50:55 HOST kernel: mwifiex_pcie 0000:01:00.0: cmd_wait_q terminated: -110
+Oct 11 00:50:55 HOST kernel: mwifiex_pcie 0000:01:00.0: deleting the crypto keys
+Oct 11 00:51:08 HOST kernel: mwifiex_pcie 0000:01:00.0: cmd_wait_q terminated: -110
+Oct 11 00:51:08 HOST kernel: mwifiex_pcie 0000:01:00.0: deleting the crypto keys
+Oct 11 00:51:20 HOST kernel: mwifiex_pcie 0000:01:00.0: cmd_wait_q terminated: -110
+Oct 11 00:51:20 HOST kernel: mwifiex_pcie 0000:01:00.0: deleting the crypto keys
+Oct 11 00:51:32 HOST kernel: mwifiex_pcie 0000:01:00.0: cmd_wait_q terminated: -110
+Oct 11 00:51:32 HOST kernel: mwifiex_pcie 0000:01:00.0: deleting the crypto keys
+Oct 11 00:51:43 HOST kernel:  mwifiex_wait_queue_complete+0xd7/0x150 [mwifiex]
+Oct 11 00:51:43 HOST kernel:  mwifiex_send_cmd+0x31e/0x490 [mwifiex]
+Oct 11 00:51:43 HOST kernel:  mwifiex_sec_ioctl_set_wep_key+0x139/0x450 [mwifiex]
+Oct 11 00:51:43 HOST kernel:  mwifiex_set_encode+0x1c9/0x270 [mwifiex]
+Oct 11 00:51:43 HOST kernel:  mwifiex_cfg80211_del_key+0x35/0x90 [mwifiex]
+Oct 11 00:51:45 HOST kernel: mwifiex_pcie 0000:01:00.0: cmd_wait_q terminated: -110
+Oct 11 00:51:45 HOST kernel: mwifiex_pcie 0000:01:00.0: deleting the crypto keys
+Oct 11 00:51:57 HOST kernel: mwifiex_pcie 0000:01:00.0: cmd_wait_q terminated: -110
+Oct 11 00:52:09 HOST kernel: mwifiex_pcie 0000:01:00.0: cmd_wait_q terminated: -110
+Oct 11 00:52:21 HOST kernel: mwifiex_pcie 0000:01:00.0: cmd_wait_q terminated: -110
+Oct 11 00:52:34 HOST kernel: mwifiex_pcie 0000:01:00.0: cmd_wait_q terminated: -110
+Oct 11 00:52:59 HOST kernel: mwifiex_pcie 0000:01:00.0: cmd_wait_q terminated: -110
+Oct 11 00:53:11 HOST kernel: mwifiex_pcie 0000:01:00.0: cmd_wait_q terminated: -110
+Oct 11 00:58:48 HOST kernel: mwifiex_pcie 0000:01:00.0: cmd_wait_q terminated: -110
+Oct 11 00:59:00 HOST kernel: mwifiex_pcie 0000:01:00.0: cmd_wait_q terminated: -110
+
+## C. Unload-on-suspend hook. Cycle 1 works; cycle 2 reloads onto a firmware that never scans.
+##    The hook's PCI remove + rescan then makes the card disappear from the bus (no probe afterwards).
+Oct 11 01:27:36 HOST kernel: mwifiex_pcie 0000:01:00.0: info: successfully disconnected from XX:XX:XX:XX:XX:XX: reason code 3
+Oct 11 01:27:36 HOST kernel: mwifiex_pcie 0000:01:00.0: PREP_CMD: FW in reset state
+Oct 11 01:27:36 HOST kernel: mwifiex_pcie 0000:01:00.0: info: shutdown mwifiex...
+Oct 11 01:27:36 HOST kernel: mwifiex_pcie 0000:01:00.0: PREP_CMD: card is removed
+Oct 11 01:27:36 HOST kernel: mwifiex_pcie 0000:01:00.0: PREP_CMD: card is removed
+Oct 11 01:27:36 HOST kernel: mwifiex_pcie 0000:01:00.0: performing cancel_work_sync()...
+Oct 11 01:27:36 HOST kernel: mwifiex_pcie 0000:01:00.0: cancel_work_sync() done
+Oct 11 01:27:36 HOST kernel: PM: suspend entry (s2idle)
+Oct 11 01:28:13 HOST kernel: pcieport 0000:00:1c.0: Intel SPT PCH root port ACS workaround enabled
+Oct 11 01:28:13 HOST kernel: pci 0000:01:00.0: Unable to change power state from unknown to D0, device inaccessible
+Oct 11 01:28:13 HOST kernel: PM: suspend exit
+Oct 11 01:28:13 HOST kernel: mwifiex_pcie 0000:01:00.0: quirk reset_d3cold enabled
+Oct 11 01:28:13 HOST kernel: mwifiex_pcie: PCI memory map Virt0: 000000005a913d36 PCI memory map Virt2: 00000000f34f94bd
+Oct 11 01:28:13 HOST kernel: mwifiex_pcie 0000:01:00.0: WLAN FW already running! Skip FW dnld
+Oct 11 01:28:13 HOST kernel: mwifiex_pcie 0000:01:00.0: WLAN FW is active
+Oct 11 01:28:13 HOST kernel: mwifiex_pcie 0000:01:00.0: host_mlme: disable, key_api: 2
+Oct 11 01:28:13 HOST kernel: mwifiex_pcie 0000:01:00.0: info: MWIFIEX VERSION: mwifiex 1.0 (15.68.19.p21) 
+Oct 11 01:28:13 HOST kernel: mwifiex_pcie 0000:01:00.0: driver_version = mwifiex 1.0 (15.68.19.p21) 
+Oct 11 01:28:13 HOST kernel: mwifiex_pcie 0000:01:00.0 wlp1s0: renamed from mlan0
+Oct 11 01:28:17 HOST kernel: mwifiex_pcie 0000:01:00.0: info: trying to associate to bssid XX:XX:XX:XX:XX:XX
+Oct 11 01:28:17 HOST kernel: mwifiex_pcie 0000:01:00.0: assoc: associated with XX:XX:XX:XX:XX:XX
+Oct 11 01:28:17 HOST kernel: mwifiex_pcie 0000:01:00.0: info: associated to bssid XX:XX:XX:XX:XX:XX successfully
+Oct 11 01:28:17 HOST kernel: mwifiex_pcie 0000:01:00.0: key: send EAPOL to XX:XX:XX:XX:XX:XX
+Oct 11 01:28:17 HOST kernel: mwifiex_pcie 0000:01:00.0: key: send EAPOL to XX:XX:XX:XX:XX:XX
+Oct 11 01:30:53 HOST kernel: mwifiex_pcie 0000:01:00.0: info: successfully disconnected from XX:XX:XX:XX:XX:XX: reason code 3
+Oct 11 01:30:53 HOST kernel: mwifiex_pcie 0000:01:00.0: PREP_CMD: FW in reset state
+Oct 11 01:30:53 HOST kernel: mwifiex_pcie 0000:01:00.0: info: shutdown mwifiex...
+Oct 11 01:30:53 HOST kernel: mwifiex_pcie 0000:01:00.0: PREP_CMD: card is removed
+Oct 11 01:30:53 HOST kernel: mwifiex_pcie 0000:01:00.0: PREP_CMD: card is removed
+Oct 11 01:30:53 HOST kernel: mwifiex_pcie 0000:01:00.0: performing cancel_work_sync()...
+Oct 11 01:30:53 HOST kernel: mwifiex_pcie 0000:01:00.0: cancel_work_sync() done
+Oct 11 01:30:53 HOST kernel: PM: suspend entry (s2idle)
+Oct 11 01:32:36 HOST kernel: pcieport 0000:00:1c.0: Intel SPT PCH root port ACS workaround enabled
+Oct 11 01:32:36 HOST kernel: pci 0000:01:00.0: Unable to change power state from unknown to D0, device inaccessible
+Oct 11 01:32:36 HOST kernel: PM: suspend exit
+Oct 11 01:32:36 HOST kernel: mwifiex_pcie 0000:01:00.0: quirk reset_d3cold enabled
+Oct 11 01:32:36 HOST kernel: mwifiex_pcie: PCI memory map Virt0: 0000000089e538a9 PCI memory map Virt2: 000000001e1633c4
+Oct 11 01:32:36 HOST kernel: mwifiex_pcie 0000:01:00.0: WLAN FW already running! Skip FW dnld
+Oct 11 01:32:36 HOST kernel: mwifiex_pcie 0000:01:00.0: WLAN FW is active
+Oct 11 01:32:36 HOST kernel: mwifiex_pcie 0000:01:00.0: host_mlme: disable, key_api: 2
+Oct 11 01:32:36 HOST kernel: mwifiex_pcie 0000:01:00.0: info: MWIFIEX VERSION: mwifiex 1.0 (15.68.19.p21) 
+Oct 11 01:32:36 HOST kernel: mwifiex_pcie 0000:01:00.0: driver_version = mwifiex 1.0 (15.68.19.p21) 
+Oct 11 01:32:36 HOST kernel: mwifiex_pcie 0000:01:00.0 wlp1s0: renamed from mlan0
+Oct 11 01:32:45 HOST kernel: mwifiex_pcie 0000:01:00.0: info: shutdown mwifiex...
+Oct 11 01:32:45 HOST kernel: mwifiex_pcie 0000:01:00.0: PREP_CMD: card is removed
+Oct 11 01:32:45 HOST kernel: mwifiex_pcie 0000:01:00.0: performing cancel_work_sync()...
+Oct 11 01:32:45 HOST kernel: mwifiex_pcie 0000:01:00.0: cancel_work_sync() done
+Oct 11 01:32:47 HOST kernel: mwifiex_pcie 0000:01:00.0: quirk reset_d3cold enabled
+Oct 11 01:32:47 HOST kernel: mwifiex_pcie: PCI memory map Virt0: 00000000f34f94bd PCI memory map Virt2: 000000001e1633c4
+Oct 11 01:32:47 HOST kernel: mwifiex_pcie 0000:01:00.0: WLAN FW already running! Skip FW dnld
+Oct 11 01:32:47 HOST kernel: mwifiex_pcie 0000:01:00.0: WLAN FW is active
+Oct 11 01:32:47 HOST kernel: mwifiex_pcie 0000:01:00.0: host_mlme: disable, key_api: 2
+Oct 11 01:32:47 HOST kernel: mwifiex_pcie 0000:01:00.0: info: MWIFIEX VERSION: mwifiex 1.0 (15.68.19.p21) 
+Oct 11 01:32:47 HOST kernel: mwifiex_pcie 0000:01:00.0: driver_version = mwifiex 1.0 (15.68.19.p21) 
+Oct 11 01:32:47 HOST kernel: mwifiex_pcie 0000:01:00.0 wlp1s0: renamed from mlan0
+Oct 11 01:32:56 HOST kernel: mwifiex_pcie 0000:01:00.0: info: shutdown mwifiex...
+Oct 11 01:32:56 HOST kernel: mwifiex_pcie 0000:01:00.0: PREP_CMD: card is removed
+Oct 11 01:32:56 HOST kernel: mwifiex_pcie 0000:01:00.0: performing cancel_work_sync()...
+Oct 11 01:32:56 HOST kernel: mwifiex_pcie 0000:01:00.0: cancel_work_sync() done
+Oct 11 01:32:57 HOST kernel: pcieport 0000:00:1c.0: Intel SPT PCH root port ACS workaround enabled
+Oct 11 01:33:48 HOST kernel: pcieport 0000:00:1c.0: Intel SPT PCH root port ACS workaround enabled
+Oct 11 01:34:09 HOST kernel: PM: suspend entry (s2idle)
+Oct 11 01:34:35 HOST kernel: pcieport 0000:00:1c.0: Intel SPT PCH root port ACS workaround enabled
+Oct 11 01:34:35 HOST kernel: pcieport 0000:00:1c.0: Intel SPT PCH root port ACS workaround enabled
+Oct 11 01:34:35 HOST kernel: PM: suspend exit
+Oct 11 01:34:57 HOST kernel: pcieport 0000:00:1c.0: Intel SPT PCH root port ACS workaround enabled
+Oct 11 01:35:20 HOST kernel: PM: suspend entry (s2idle)
+Oct 11 07:41:43 HOST kernel: pcieport 0000:00:1c.0: Intel SPT PCH root port ACS workaround enabled
+Oct 11 07:41:43 HOST kernel: pcieport 0000:00:1c.0: Intel SPT PCH root port ACS workaround enabled
+Oct 11 07:41:43 HOST kernel: PM: suspend exit
+Oct 11 07:42:05 HOST kernel: pcieport 0000:00:1c.0: Intel SPT PCH root port ACS workaround enabled
+
+## D. pcie_port_pm=off, no hook: three cycles (49 s, 6 min, 40 min). Driver stays loaded, no errors.
+Oct 11 08:31:46 HOST kernel: mwifiex_pcie 0000:01:00.0: info: successfully disconnected from XX:XX:XX:XX:XX:XX: reason code 3
+Oct 11 08:31:46 HOST kernel: PM: suspend entry (s2idle)
+Oct 11 08:32:35 HOST kernel: PM: suspend exit
+Oct 11 08:32:39 HOST kernel: mwifiex_pcie 0000:01:00.0: info: trying to associate to bssid XX:XX:XX:XX:XX:XX
+Oct 11 08:32:39 HOST kernel: mwifiex_pcie 0000:01:00.0: assoc: associated with XX:XX:XX:XX:XX:XX
+Oct 11 08:32:39 HOST kernel: mwifiex_pcie 0000:01:00.0: info: associated to bssid XX:XX:XX:XX:XX:XX successfully
+Oct 11 08:32:39 HOST kernel: mwifiex_pcie 0000:01:00.0: key: send EAPOL to XX:XX:XX:XX:XX:XX
+Oct 11 08:32:39 HOST kernel: mwifiex_pcie 0000:01:00.0: key: send EAPOL to XX:XX:XX:XX:XX:XX
+Oct 11 08:36:26 HOST kernel: mwifiex_pcie 0000:01:00.0: info: successfully disconnected from XX:XX:XX:XX:XX:XX: reason code 3
+Oct 11 08:36:27 HOST kernel: PM: suspend entry (s2idle)
+Oct 11 08:42:25 HOST kernel: PM: suspend exit
+Oct 11 08:42:29 HOST kernel: mwifiex_pcie 0000:01:00.0: info: trying to associate to bssid XX:XX:XX:XX:XX:XX
+Oct 11 08:42:29 HOST kernel: mwifiex_pcie 0000:01:00.0: assoc: associated with XX:XX:XX:XX:XX:XX
+Oct 11 08:42:29 HOST kernel: mwifiex_pcie 0000:01:00.0: info: associated to bssid XX:XX:XX:XX:XX:XX successfully
+Oct 11 08:42:29 HOST kernel: mwifiex_pcie 0000:01:00.0: key: send EAPOL to XX:XX:XX:XX:XX:XX
+Oct 11 08:42:29 HOST kernel: mwifiex_pcie 0000:01:00.0: key: send EAPOL to XX:XX:XX:XX:XX:XX
+Oct 11 08:53:17 HOST kernel: mwifiex_pcie 0000:01:00.0: info: successfully disconnected from XX:XX:XX:XX:XX:XX: reason code 3
+Oct 11 08:53:18 HOST kernel: PM: suspend entry (s2idle)
+Oct 11 09:33:26 HOST kernel: PM: suspend exit
+Oct 11 09:33:30 HOST kernel: mwifiex_pcie 0000:01:00.0: info: trying to associate to bssid XX:XX:XX:XX:XX:XX
+Oct 11 09:33:30 HOST kernel: mwifiex_pcie 0000:01:00.0: assoc: associated with XX:XX:XX:XX:XX:XX
+Oct 11 09:33:30 HOST kernel: mwifiex_pcie 0000:01:00.0: info: associated to bssid XX:XX:XX:XX:XX:XX successfully
+Oct 11 09:33:30 HOST kernel: mwifiex_pcie 0000:01:00.0: key: send EAPOL to XX:XX:XX:XX:XX:XX
+Oct 11 09:33:30 HOST kernel: mwifiex_pcie 0000:01:00.0: key: send EAPOL to XX:XX:XX:XX:XX:XX
