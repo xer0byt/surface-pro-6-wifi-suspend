@@ -7,10 +7,12 @@ Debian-based distribution. A full power-off is needed to recover.
 This repository has a diagnostic script, a stop-gap fix, and a full write-up.
 
 > **Status:** both fixes are verified on one machine (Surface Pro 6, Kubuntu /
-> Ubuntu 26.04). The stop-gap (`pcie_port_pm=off`, stock 7.0.0-38-generic) and
-> the proper fix (linux-surface kernel 6.19.8-surface-3, stop-gap removed) each
-> survived the suspend cycles tried, but the sample is small: five cycles in
-> total, longest 40 minutes. See [docs/WRITEUP.md](docs/WRITEUP.md).
+> Ubuntu 26.04). The stop-gap (`pcie_port_pm=off`, stock 7.0.0-38-generic)
+> survived three suspends, longest 40 minutes. The proper fix (linux-surface
+> kernel 6.19.8-surface-3, stop-gap removed) survived six, from 45 seconds to
+> 18 h 28 min overnight, with Wi-Fi back in 3 to 4 seconds each time and none of
+> the original error signatures. It is still one machine and nine cycles in
+> total. See [docs/WRITEUP.md](docs/WRITEUP.md) and the [changelog](CHANGELOG.md).
 
 ## Is this your problem?
 
@@ -46,7 +48,8 @@ bash scripts/wifi-fix.sh status                       # "param active: yes"
 Undo with `sudo bash scripts/wifi-fix.sh revert`.
 
 Trade-off: the parameter is global, so every PCIe port stays awake. On the test
-machine a 40-minute suspend used about 4% battery. Measure yours.
+machine a 40-minute suspend used about 4% battery (one uncontrolled reading).
+Measure yours.
 
 ## Proper fix
 
@@ -56,19 +59,32 @@ you do, remove the stop-gap with `wifi-fix.sh revert` and reboot.
 
 Tested result (Surface Pro 6, Secure Boot on, linux-surface signing key enrolled
 in MOK): after booting 6.19.8-surface-3 without `pcie_port_pm=off`,
-`wifi-diagnose.sh` reports `no_bridge_d3 quirk : PRESENT`, and suspends of
-45 s and 9 min both resumed with Wi-Fi back in about 3 s and no error
-signatures.
+`wifi-diagnose.sh` reports `no_bridge_d3 quirk : PRESENT`, and six suspends
+(45 s, 8 min, 9 min, 77 min, 101 min and 18 h 28 min) all resumed with Wi-Fi
+back in 3 to 4 s, with none of the original failure signatures anywhere in that
+boot's kernel log.
+
+Standby drain on that kernel: about 0.5 W (1.2% battery per hour) over the
+overnight suspend. The write-up has the measurement method and its limits;
+it is one machine and was not compared with the stop-gap under the same
+conditions.
 
 Things to check after installing it:
 
 - `uname -r` should show the `-surface` kernel. Which kernel GRUB boots by
   default depends on its version ordering; if you land on the generic one,
   choose the Surface entry under *Advanced options*.
-- A single shutdown on the test machine stalled for about three minutes on
-  `iptsd` (the touchscreen daemon, part of the linux-surface packages) and
-  needed a power-button reset. It happened once; the cause is not established
-  and it is unrelated to Wi-Fi. See the write-up.
+- The touchscreen is the weak spot of the Surface kernel on the test machine,
+  and it is unrelated to Wi-Fi. The `ipts` driver intermittently fails to
+  start (3 of 8 boot/resume sequences, once at boot with no suspend), leaving
+  touch dead until `sudo modprobe -r ipts && sudo modprobe ipts`; restarting
+  `iptsd` is not enough. A worse variant left `iptsd` stuck, which aborted two
+  re-suspend attempts; a three-minute shutdown stall on an earlier boot looks
+  like the same thing, but I have no kernel stack for it. It matches the open
+  upstream reports
+  [linux-surface#2299](https://github.com/linux-surface/linux-surface/issues/2299)
+  and [#1181](https://github.com/linux-surface/linux-surface/issues/1181).
+  Wi-Fi was not affected. See the write-up.
 
 ## Contents
 
@@ -77,7 +93,8 @@ Things to check after installing it:
 | `scripts/wifi-diagnose.sh` | Read-only report with a verdict; `--redact` masks MACs and hostname |
 | `scripts/wifi-fix.sh` | `apply`, `revert`, `status`, `--dry-run`, `--disable-hooks` |
 | `docs/WRITEUP.md` | Root cause, what failed and why, fix options, caveats |
-| `docs/evidence/journal-excerpts.txt` | Sanitized kernel logs: failure, failed workarounds, working state |
+| `docs/evidence/journal-excerpts.txt` | Sanitized kernel logs: failure, failed workarounds, working state, long suspends, touchscreen failures |
+| `CHANGELOG.md` | What changed between releases |
 
 ## Safety
 

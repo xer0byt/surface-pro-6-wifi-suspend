@@ -1,5 +1,6 @@
-# Evidence: Surface Pro 6, Ubuntu 26.04 (Kubuntu), kernel 7.0.0-38-generic
+# Evidence: Surface Pro 6, Ubuntu 26.04 (Kubuntu), kernels 7.0.0-38-generic (A-D) and 6.19.8-surface-3 (E-J)
 # Hostname and access-point MAC addresses redacted. Times are the machine's local time.
+# Kernel messages logged while the machine is suspended are stamped with the wake time by journald.
 
 ## A. No workaround: firmware does not wake after resume, driver's own D3cold reset does not clear it
 Oct 11 01:13:45 HOST kernel: mwifiex_pcie 0000:01:00.0: info: successfully disconnected from XX:XX:XX:XX:XX:XX: reason code 3
@@ -228,3 +229,114 @@ Oct 11 13:09:23 HOST systemd[1]: Stopped target time-set.target - System Time Se
 Oct 11 13:10:50 HOST systemd[1]: iptsd@dev-hidraw2.service: State 'stop-sigterm' timed out. Killing.
 Oct 11 13:10:50 HOST systemd[1]: iptsd@dev-hidraw2.service: Killing process 1260 (iptsd) with signal SIGKILL.
 Oct 11 13:12:20 HOST systemd[1]: iptsd@dev-hidraw2.service: Processes still around after SIGKILL. Ignoring.
+
+## G. Same kernel, overnight: suspended 18 h 28 min (14:44 to 09:12). On wake the Type Cover failed to enumerate
+##    once (error -71) and the machine tried to re-suspend twice; both attempts aborted after 20 s because
+##    iptsd would not freeze (see I.2). Wi-Fi associated 3 s after the machine stayed awake. No firmware or D3 errors.
+Oct 11 14:44:47 HOST kernel: mwifiex_pcie 0000:01:00.0: info: successfully disconnected from XX:XX:XX:XX:XX:XX: reason code 3
+Oct 11 14:44:47 HOST kernel: PM: suspend entry (s2idle)
+Oct 12 09:12:42 HOST kernel: PM: suspend exit
+Oct 12 09:12:43 HOST kernel: usb 1-7: can't set config #1, error -71
+Oct 12 09:12:43 HOST kernel: PM: suspend entry (s2idle)
+Oct 12 09:13:03 HOST kernel: Freezing user space processes failed after 20.004 seconds (1 tasks refusing to freeze, wq_busy=0):
+Oct 12 09:13:03 HOST kernel: PM: suspend exit
+Oct 12 09:13:03 HOST kernel: PM: suspend entry (s2idle)
+Oct 12 09:13:23 HOST kernel: Freezing user space processes failed after 20.006 seconds (1 tasks refusing to freeze, wq_busy=0):
+Oct 12 09:13:23 HOST kernel: PM: suspend exit
+Oct 12 09:13:26 HOST kernel: mwifiex_pcie 0000:01:00.0: info: trying to associate to bssid XX:XX:XX:XX:XX:XX
+Oct 12 09:13:26 HOST kernel: mwifiex_pcie 0000:01:00.0: assoc: associated with XX:XX:XX:XX:XX:XX
+Oct 12 09:13:26 HOST kernel: mwifiex_pcie 0000:01:00.0: info: associated to bssid XX:XX:XX:XX:XX:XX successfully
+Oct 12 09:13:33 HOST kernel: mwifiex_pcie 0000:01:00.0: info: successfully disconnected from XX:XX:XX:XX:XX:XX: reason code 3
+Oct 12 09:13:34 HOST kernel: PM: suspend entry (s2idle)
+
+## H. Same kernel: suspended 100.8 min (11:08 to 12:49). Wi-Fi associated 3 s after wake. It then switched between
+##    two access points of the same network twice within 20 s (the same happened after the 77 min suspend);
+##    each association succeeded.
+Oct 12 11:08:22 HOST kernel: mwifiex_pcie 0000:01:00.0: info: successfully disconnected from XX:XX:XX:XX:XX:XX: reason code 3
+Oct 12 11:08:23 HOST kernel: PM: suspend entry (s2idle)
+Oct 12 12:49:09 HOST kernel: PM: suspend exit
+Oct 12 12:49:12 HOST kernel: mwifiex_pcie 0000:01:00.0: info: trying to associate to bssid XX:XX:XX:XX:XX:XX
+Oct 12 12:49:12 HOST kernel: mwifiex_pcie 0000:01:00.0: assoc: associated with XX:XX:XX:XX:XX:XX
+Oct 12 12:49:12 HOST kernel: mwifiex_pcie 0000:01:00.0: info: associated to bssid XX:XX:XX:XX:XX:XX successfully
+Oct 12 12:49:25 HOST kernel: mwifiex_pcie 0000:01:00.0: info: successfully disconnected from XX:XX:XX:XX:XX:XX: reason code 12
+Oct 12 12:49:25 HOST kernel: mwifiex_pcie 0000:01:00.0: info: trying to associate to bssid XX:XX:XX:XX:XX:XX
+Oct 12 12:49:26 HOST kernel: mwifiex_pcie 0000:01:00.0: assoc: associated with XX:XX:XX:XX:XX:XX
+Oct 12 12:49:26 HOST kernel: mwifiex_pcie 0000:01:00.0: info: associated to bssid XX:XX:XX:XX:XX:XX successfully
+Oct 12 12:49:32 HOST kernel: mwifiex_pcie 0000:01:00.0: info: successfully disconnected from XX:XX:XX:XX:XX:XX: reason code 3
+Oct 12 12:49:32 HOST kernel: mwifiex_pcie 0000:01:00.0: info: trying to associate to bssid XX:XX:XX:XX:XX:XX
+Oct 12 12:49:32 HOST kernel: mwifiex_pcie 0000:01:00.0: assoc: associated with XX:XX:XX:XX:XX:XX
+Oct 12 12:49:32 HOST kernel: mwifiex_pcie 0000:01:00.0: info: associated to bssid XX:XX:XX:XX:XX:XX successfully
+
+## I. Same kernel, touchscreen (not Wi-Fi): the ipts driver fails its event to poll mode switch with -EAGAIN (-11).
+##    Three of eight init/resume sequences in this boot: at boot (no suspend), after the aborted re-suspend in G,
+##    and after the 100.8 min suspend in H. Reloading the module (modprobe -r ipts; modprobe ipts) restores touch.
+# I.1 at boot, no suspend involved
+Oct 11 13:13:35 HOST kernel: ipts 0000:00:16.4-3e8d0870-271a-4208-8eb5-9acb9402ae04: Starting IPTS
+Oct 11 13:13:35 HOST kernel: ipts 0000:00:16.4-3e8d0870-271a-4208-8eb5-9acb9402ae04: IPTS EDS Version: 1
+Oct 11 13:13:35 HOST kernel: ipts 0000:00:16.4-3e8d0870-271a-4208-8eb5-9acb9402ae04: IPTS running in event mode
+Oct 11 13:13:36 HOST iptsd[1258]: [13:13:36.292] [info] Loading config /usr/share/iptsd/surface-pro-6.conf.
+Oct 11 13:13:36 HOST iptsd[1258]: [13:13:36.292] [info] Loading config /etc/iptsd.conf.
+Oct 11 13:13:36 HOST iptsd[1258]: [13:13:36.294] [info] Connected to device 045E:001F
+Oct 11 13:13:36 HOST iptsd[1258]: [13:13:36.294] [info] Running in Touchscreen mode
+Oct 11 13:13:36 HOST kernel: ipts 0000:00:16.4-3e8d0870-271a-4208-8eb5-9acb9402ae04: Stopping IPTS
+Oct 11 13:13:37 HOST kernel: ipts 0000:00:16.4-3e8d0870-271a-4208-8eb5-9acb9402ae04: QUIESCE_IO: recv failed: -11
+Oct 11 13:13:37 HOST kernel: ipts 0000:00:16.4-3e8d0870-271a-4208-8eb5-9acb9402ae04: Failed to wait for flush: -11
+Oct 11 13:13:38 HOST kernel: ipts 0000:00:16.4-3e8d0870-271a-4208-8eb5-9acb9402ae04: Starting IPTS
+Oct 11 13:13:39 HOST kernel: ipts 0000:00:16.4-3e8d0870-271a-4208-8eb5-9acb9402ae04: GET_DEVICE_INFO: recv failed: -11
+Oct 11 13:13:39 HOST kernel: ipts 0000:00:16.4-3e8d0870-271a-4208-8eb5-9acb9402ae04: Failed to get device info: -11
+Oct 11 13:13:39 HOST kernel: ipts 0000:00:16.4-3e8d0870-271a-4208-8eb5-9acb9402ae04: Failed to switch modes: -11
+Oct 11 13:13:39 HOST iptsd[1258]: [13:13:39.426] [error] core: linux: IOCTL 3221374982 failed: Resource temporarily unavailable
+# I.2 the aborted re-suspends: iptsd is inside ipts_control_restart, waiting on a mutex
+Oct 12 09:13:03 HOST kernel: Freezing user space processes
+Oct 12 09:13:03 HOST kernel: Freezing user space processes failed after 20.004 seconds (1 tasks refusing to freeze, wq_busy=0):
+Oct 12 09:13:03 HOST kernel: task:iptsd           state:R  running task     stack:0     pid:17949 tgid:17949 ppid:1      task_flags:0x400100 flags:0x00080802
+Oct 12 09:13:03 HOST kernel: Call Trace:
+Oct 12 09:13:03 HOST kernel:  <TASK>
+Oct 12 09:13:03 HOST kernel:  ? mutex_spin_on_owner+0x8f/0xd0
+Oct 12 09:13:03 HOST kernel:  ? __mutex_lock.constprop.0+0x6c2/0x9d0
+Oct 12 09:13:03 HOST kernel:  ? __mutex_lock_slowpath+0x13/0x20
+Oct 12 09:13:03 HOST kernel:  ? mutex_lock+0x3d/0x50
+Oct 12 09:13:03 HOST kernel:  ? __mei_cl_send_timeout+0x5e/0x2f0 [mei]
+Oct 12 09:13:03 HOST kernel:  ? mei_cldev_send+0x27/0x40 [mei]
+Oct 12 09:13:03 HOST kernel:  ? ipts_mei_send+0x39/0x70 [ipts]
+Oct 12 09:13:03 HOST kernel:  ? ipts_cmd_send+0xb8/0x120 [ipts]
+Oct 12 09:13:03 HOST kernel:  ? ipts_control_get_device_info+0x4f/0x130 [ipts]
+Oct 12 09:13:03 HOST kernel:  ? ipts_control_start+0x6d/0x2d0 [ipts]
+Oct 12 09:13:03 HOST kernel:  ? ipts_control_restart+0x29/0x40 [ipts]
+Oct 12 09:13:03 HOST kernel:  ? ipts_eds1_raw_request+0x63/0x110 [ipts]
+Oct 12 09:13:03 HOST kernel:  ? ipts_hid_raw_request+0x5b/0xa0 [ipts]
+Oct 12 09:13:03 HOST kernel:  ? __hid_hw_raw_request+0x8e/0xc0 [hid]
+Oct 12 09:13:03 HOST kernel:  ? hidraw_send_report+0xb1/0x1a0 [hid]
+Oct 12 09:13:03 HOST kernel:  ? hidraw_ioctl+0x256/0x400 [hid]
+Oct 12 09:13:03 HOST kernel:  </TASK>
+# I.3 after the second aborted attempt
+Oct 12 09:13:27 HOST kernel: ipts 0000:00:16.4-3e8d0870-271a-4208-8eb5-9acb9402ae04: IPTS EDS Version: 1
+Oct 12 09:13:31 HOST kernel: ipts 0000:00:16.4-3e8d0870-271a-4208-8eb5-9acb9402ae04: SET_MODE: recv failed: -11
+Oct 12 09:13:31 HOST kernel: ipts 0000:00:16.4-3e8d0870-271a-4208-8eb5-9acb9402ae04: Failed to set mode: -11
+Oct 12 09:13:31 HOST kernel: ipts 0000:00:16.4-3e8d0870-271a-4208-8eb5-9acb9402ae04: Failed to switch modes: -11
+Oct 12 09:13:31 HOST iptsd[17949]: [09:13:31.531] [error] core: linux: IOCTL 3221374982 failed: Resource temporarily unavailable
+# I.4 after the 100.8 min suspend (journal order)
+Oct 12 12:49:09 HOST iptsd[18569]: [12:49:09.103] [warning] core: linux: Reading from file failed: Input/output error
+Oct 12 12:49:09 HOST kernel: ipts 0000:00:16.4-3e8d0870-271a-4208-8eb5-9acb9402ae04: Stopping IPTS
+Oct 12 12:49:09 HOST kernel: ipts 0000:00:16.4-3e8d0870-271a-4208-8eb5-9acb9402ae04: Starting IPTS
+Oct 12 12:49:09 HOST kernel: ipts 0000:00:16.4-3e8d0870-271a-4208-8eb5-9acb9402ae04: IPTS EDS Version: 1
+Oct 12 12:49:09 HOST kernel: ipts 0000:00:16.4-3e8d0870-271a-4208-8eb5-9acb9402ae04: IPTS running in event mode
+Oct 12 12:49:09 HOST iptsd[18569]: [12:49:09.205] [warning] core: linux: Reading from file failed: Input/output error
+Oct 12 12:49:09 HOST iptsd[18569]: [12:49:09.305] [error] core: linux: IOCTL 3221374982 failed: No such device
+Oct 12 12:49:09 HOST iptsd[22279]: [12:49:09.452] [info] Loading config /usr/share/iptsd/surface-pro-6.conf.
+Oct 12 12:49:09 HOST iptsd[22279]: [12:49:09.452] [info] Loading config /etc/iptsd.conf.
+Oct 12 12:49:09 HOST iptsd[22279]: [12:49:09.456] [info] Connected to device 045E:001F
+Oct 12 12:49:09 HOST iptsd[22279]: [12:49:09.456] [info] Running in Touchscreen mode
+Oct 12 12:49:09 HOST kernel: ipts 0000:00:16.4-3e8d0870-271a-4208-8eb5-9acb9402ae04: Stopping IPTS
+Oct 12 12:49:10 HOST kernel: ipts 0000:00:16.4-3e8d0870-271a-4208-8eb5-9acb9402ae04: QUIESCE_IO: recv failed: -11
+Oct 12 12:49:10 HOST kernel: ipts 0000:00:16.4-3e8d0870-271a-4208-8eb5-9acb9402ae04: Failed to wait for flush: -11
+Oct 12 12:49:11 HOST kernel: ipts 0000:00:16.4-3e8d0870-271a-4208-8eb5-9acb9402ae04: Starting IPTS
+Oct 12 12:49:12 HOST kernel: ipts 0000:00:16.4-3e8d0870-271a-4208-8eb5-9acb9402ae04: GET_DEVICE_INFO: recv failed: -11
+Oct 12 12:49:12 HOST kernel: ipts 0000:00:16.4-3e8d0870-271a-4208-8eb5-9acb9402ae04: Failed to get device info: -11
+Oct 12 12:49:12 HOST kernel: ipts 0000:00:16.4-3e8d0870-271a-4208-8eb5-9acb9402ae04: Failed to switch modes: -11
+Oct 12 12:49:12 HOST iptsd[22279]: [12:49:12.621] [error] core: linux: IOCTL 3221374982 failed: Resource temporarily unavailable
+
+## J. Same kernel: one IOMMU fault attributed to the Wi-Fi card's PCI address, once, no visible effect.
+##    About four minutes after the 9 min resume. Cause not established.
+Oct 11 13:46:38 HOST kernel: DMAR: DRHD: handling fault status reg 2
+Oct 11 13:46:38 HOST kernel: DMAR: [DMA Write NO_PASID] Request device [01:00.0] fault addr 0xffc6e000 [fault reason 0x05] PTE Write access is not set
