@@ -84,7 +84,9 @@ Things to check after installing it:
   upstream reports
   [linux-surface#2299](https://github.com/linux-surface/linux-surface/issues/2299)
   and [#1181](https://github.com/linux-surface/linux-surface/issues/1181).
-  Wi-Fi was not affected. See the write-up.
+  Wi-Fi was not affected. See the write-up. A small script that reloads the
+  driver automatically when `iptsd` fails is in
+  [surface-pro-6-ipts-recover](https://github.com/xer0byt/surface-pro-6-ipts-recover).
 
 ## Contents
 
